@@ -5787,7 +5787,8 @@ var THREEx = THREEx || {}
 
 ARjs.Source = THREEx.ArToolkitSource = function(parameters){	
 	var _this = this
-
+//	alert('Fffuucuck!!!!');
+//	console.log('shdoasdias')
 	this.ready = false
         this.domElement = null
 
@@ -5980,6 +5981,7 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
 				}
 		  	}
                 }
+		console.log('hello there');
 		// get a device which satisfy the constraints
 		navigator.mediaDevices.getUserMedia(userMediaConstraints).then(function success(stream) {
 			// set the .src of the domElement

@@ -1,7 +1,8 @@
 var ARjs = ARjs || {}
 var THREEx = THREEx || {}
 
-ARjs.Source = THREEx.ArToolkitSource = function(parameters){	
+ARjs.Source = THREEx.ArToolkitSource = function(parameters){
+console.log('111111');	
 	var _this = this
 
 	this.ready = false
@@ -13,6 +14,7 @@ ARjs.Source = THREEx.ArToolkitSource = function(parameters){
 		sourceType : 'webcam',
 		// url of the source - valid if sourceType = image|video
 		sourceUrl : null,
+        camId : 1,
 		
 		// resolution of at which we initialize in the source image
 		sourceWidth: 640,
@@ -25,6 +27,7 @@ ARjs.Source = THREEx.ArToolkitSource = function(parameters){
 	//		setParameters
 	//////////////////////////////////////////////////////////////////////////////
 	setParameters(parameters)
+	//console.warn('111d');
 	function setParameters(parameters){
 		if( parameters === undefined )	return
 		for( var key in parameters ){
@@ -52,14 +55,16 @@ ARjs.Source = THREEx.ArToolkitSource = function(parameters){
 //////////////////////////////////////////////////////////////////////////////
 ARjs.Source.prototype.init = function(onReady, onError){
 	var _this = this
+		console.log('111');
 
         if( this.parameters.sourceType === 'image' ){
                 var domElement = this._initSourceImage(onSourceReady, onError)                        
         }else if( this.parameters.sourceType === 'video' ){
                 var domElement = this._initSourceVideo(onSourceReady, onError)                        
         }else if( this.parameters.sourceType === 'webcam' ){
+		console.log('111');
                 // var domElement = this._initSourceWebcamOld(onSourceReady)                        
-                var domElement = this._initSourceWebcam(onSourceReady, onError)                        
+                var domElement = this._initSourceWebcam(onSourceReady, onError, _this.parameters.camId)                        
         }else{
                 console.assert(false)
         }
@@ -148,9 +153,10 @@ ARjs.Source.prototype._initSourceVideo = function(onReady) {
 //          handle webcam source
 ////////////////////////////////////////////////////////////////////////////////
 
-ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
+ARjs.Source.prototype._initSourceWebcam = function(onReady, onError, camId) {
 	var _this = this
-
+//	alert('test!');
+	console.log('testsdsdfsd');
 	// init default value
 	onError = onError || function(error){	
 		alert('Webcam Error\nName: '+error.name + '\nMessage: '+error.message)
@@ -180,6 +186,25 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
 
 	// get available devices
 	navigator.mediaDevices.enumerateDevices().then(function(devices) {
+		//console.log(devices);
+        sel_deviceId = camId;
+
+            for (var i = 0; i !== devices.length; ++i) {
+            var deviceInfo = devices[i];
+            if (deviceInfo.kind === "videoinput") {
+              if (sel_deviceId>0)
+                sel_deviceId--;
+              if (sel_deviceId === 0)
+              {
+                  sel_deviceId = deviceInfo.deviceId;
+                  console.log('Selected device:');
+                  console.log(sel_deviceId);
+              }
+            } else {
+              //console.log("Some other kind of source/device: ", deviceInfo);
+            }
+          }
+
                 var userMediaConstraints = {
 			audio: false,
 			video: {
@@ -193,7 +218,8 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
 					ideal: _this.parameters.sourceHeight,
 					// min: 776,
 					// max: 1080
-				}
+				},
+                deviceId: { exact: sel_deviceId }
 		  	}
                 }
 		// get a device which satisfy the constraints

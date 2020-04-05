@@ -1105,6 +1105,8 @@
 		@return {VideoElement} Returns the created video element.
 	*/
 	ARController.getUserMedia = function(configuration) {
+		console.log('HELLOOOOOO');
+		alert('test');
 		var facing = configuration.facingMode || 'environment';
 
 		var onSuccess = configuration.onSuccess;
@@ -1217,6 +1219,8 @@
 			}
 		} else {
 			if (navigator.getUserMedia) {
+				console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!hdConstraints:');
+				console.log(hdConstraints);
 				navigator.getUserMedia(hdConstraints, success, onError);
 			} else {
 				onError('navigator.getUserMedia is not supported on your browser');
@@ -1557,6 +1561,7 @@
 			if (callback) callback(id);
 		};
 		if (typeof url === 'object') { // Maybe it's a byte array
+            console.log('object url');
 			writeByteArrayToFS(filename, url, writeCallback);
 		} else if (url.indexOf("\n") > -1) { // Or a string with the camera param
 			writeStringToFS(filename, url, writeCallback);
@@ -1569,6 +1574,7 @@
 	// transfer image
 
 	function writeStringToFS(target, string, callback) {
+        console.log('writeStringToFS test');
 		var byteArray = new Uint8Array(string.length);
 		for (var i=0; i<byteArray.length; i++) {
 			byteArray[i] = string.charCodeAt(i) & 0xff;
@@ -1596,7 +1602,7 @@
 			// console.log('ajax done for ', url);
 			var arrayBuffer = oReq.response;
 			var byteArray = new Uint8Array(arrayBuffer);
-	// console.log('writeByteArrayToFS', target, byteArray.length, 'byte. url', url)
+	        console.log('writeByteArrayToFS', target, byteArray.length, 'byte. url', url)
 			writeByteArrayToFS(target, byteArray, callback);
 		};
 
